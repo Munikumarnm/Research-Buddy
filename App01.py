@@ -16,14 +16,34 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Step 1: Upload PDF
-with st.container():
-    st.markdown("### 📄 Step 1: Upload Your Research Paper")
-    uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
+# Step 1: Header
+st.markdown("### 📄 Upload Your Research Paper")
 
-    if uploaded_pdf and "full_text" not in st.session_state:
+# Step 1: File Uploader
+uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
+
+# Detect re-upload and reprocess if new file
+if uploaded_pdf:
+    if "last_filename" not in st.session_state or st.session_state["last_filename"] != uploaded_pdf.name:
+        # Clear previous session states
+        for key in list(st.session_state.keys()):
+            if key not in ("last_filename",):
+                del st.session_state[key]
+
         with st.spinner("Extracting and processing your paper..."):
             full_text = extract_text_from_pdf(uploaded_pdf)
+
+            total_chars = len(full_text)
+            if total_chars < 5000:
+                msg = "🚀 Quick read! Your podcast will be ready in under 30 seconds."
+            elif total_chars < 10000:
+                msg = "⏱️ Hang tight! Cooking up your podcast — about a minute to go."
+            elif total_chars < 20000:
+                msg = "🧠 Big brain alert! This one will take ~3 minutes. Stay tuned."
+            else:
+                msg = "📚 Long paper detected! Give us ~5 mins to podcastify your research."
+            st.info(msg)
+
             chunks = split_text(full_text)
             summaries = summarize_chunks(chunks)
             combined_summary = "\n\n".join(summaries)
@@ -38,9 +58,13 @@ with st.container():
                 st.session_state[f"dialogue_{lvl}"] = trimmed_dia
                 st.session_state[f"audio_{lvl}"] = generate_audio(trimmed_dia, level=lvl)
 
+            st.session_state["last_filename"] = uploaded_pdf.name
+
+        st.success("🎉 All set! Your podcast is ready — pick your style, press play, and enjoy the research ride! 🎧")
+
 # Step 2: Audio and Script
 if "summary" in st.session_state:
-    st.markdown("### 🎧 Step 2: Listen to the Podcast & Read Script")
+    st.markdown("### 🎧 Listen to the Podcast & Read Script")
 
     level = st.radio("Select podcast detail level:", ["Summarize", "Brief", "Deep Dive"], horizontal=True)
 
