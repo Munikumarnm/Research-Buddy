@@ -21,7 +21,7 @@ Research Buddy is a Streamlit-based web app that allows you to upload a PDF rese
 
 ## 🚀 Live Demo
 
-👉 [Launch the app on Streamlit Cloud](https://your-username-research-buddy.streamlit.app)  
+👉https://munikumar-research-buddy.streamlit.app
 *(Replace with your actual app URL after deployment)*
 
 ---
@@ -31,5 +31,5 @@ Research Buddy is a Streamlit-based web app that allows you to upload a PDF rese
 ### 📁 Clone the repo
 
 ```bash
-git clone https://github.com/your-username/research-buddy.git
+git clone https://github.com/munikumarnm/research-buddy.git
 cd research-buddy
